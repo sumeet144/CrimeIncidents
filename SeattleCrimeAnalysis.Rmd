@@ -1,0 +1,80 @@
+---
+title: "SeattleCrimeAnalysis"
+author: "Sumeet Sharma"
+date: "November 19, 2015"
+output: html_document
+---
+```{r}
+library(ggplot2)
+library(ggmap)
+library(maps)
+```
+
+```{r}
+# Explore top 3 crime incidents at different times of the day in Seattle
+# Data is collected from data.seattle.gov and is stored in a csv file
+# fromJSON("https://data.seattle.gov/resource/7ais-f98f.json")
+
+crime.seattle <- read.csv(file="crime.csv", head=TRUE, sep=",")
+crime.seattle$date <- strptime(crime.seattle$crime.time, 
+                               format = "%m/%d/%Y %H:%M")
+crime.seattle$time <- substr(crime.seattle$date, 12,13)
+crime.seattle$time[crime.seattle$time %in% c("00", "01", "02","03", "22", 
+                                             "23", "24")] <- "night"
+crime.seattle$time[crime.seattle$time %in% c("04", "05", "06","07", "08", 
+                                             "09")] <- "morning"
+crime.seattle$time[crime.seattle$time %in% c("10", "11", "12","13", "14", 
+                                             "15")] <- "midday"
+crime.seattle$time[crime.seattle$time %in% c("16", "17", "18","19", "20", 
+                                             "21")] <- "evening"
+time.table <- table(crime.seattle$time,crime.seattle$crime.desc)
+time <- factor(rownames(time.table), levels = c("morning", "midday", 
+                                                "evening", "night"))
+sorted.time.table <- time.table[order(time), ]
+table1 <- sorted.time.table[ , c("CAR PROWL", "BURGLARY", "OTHER PROPERTY")]
+category <- c("morning", "midday", "evening", "night")
+matplot(table1, type = "l", main = "Thefts by Time of Day", 
+        xlab = "Section of Day",ylab = "Frequency", xaxt = "n")
+v1 <- c(1, 2, 3, 4)
+axis(side = 1, at = v1, labels = category)
+```
+
+
+
+```{r}
+# Plot crime incidents on Seattle Map
+crime.sample <- crime.seattle[2:1000, 15:16]
+latitude <- crime.sample$latitude
+longitude <- crime.sample$longitude
+basemap <- get_map(location='Seattle, USA', zoom = 11, maptype='roadmap', 
+                   color='bw', source='google')
+map1 <- ggmap(basemap, extent='panel', base_layer=ggplot(crime.sample, 
+                                                         aes(x=longitude, 
+                                                             y=latitude)))
+map.villages <- map1 + geom_point(color = "blue", size = 4)
+map.villages <- map.villages + labs(title="Seattle Crime Area", x="Longitude", 
+                                    y="Latitude")
+map.villages <- map.villages + 
+                theme(plot.title = element_text(hjust = 0, vjust = 1, 
+                                                face = c("bold")))
+crime.desc <- crime.seattle[2:1000, 6]
+map.survey <- map1 + geom_point(aes(color = crime.desc), size = 4, alpha = .8)
+map.survey <- map.survey + labs(title="Seattle Crime Area Map", x="Longitude", 
+                                y="Latitude", color="Crime Desc Code")
+
+# Plot a bar chart to exlpore top crimes in the city
+barplot(sort(table(crime.seattle$crime.desc), decreasing=TRUE), 
+        main="Seattle Crime Incidents Numbers",
+        xlab="Crime", ylab="Number of times crime committed")
+
+# Plot pie chart to explore proportion of different crime incidents in the data
+crime.freq <- table(crime.seattle$crime.desc)
+crime.freq.desc <- sort(crime.freq, decreasing = TRUE)
+names(crime.freq.desc)[6:35] <- rep("", times = 30)
+percentlabels <- round(100*crime.freq.desc/sum(crime.freq.desc),1)
+chartlabels <- paste(names(crime.freq.desc)," ", percentlabels, "%", sep="")
+pie(crime.freq.desc,main = "Types of crime in Seattle", col = rainbow(10), labels=chartlabels)
+
+```
+
+
