@@ -79,18 +79,25 @@ below shows the number. This type of visualization will enable patterns, showing
 crimes committed over different intervals of the day from 1965 to 2015.</p>
 
 <pre><code>crime.seattle &lt;- read.csv(file="crime.csv", head=TRUE, sep=",")
-crime.seattle$date &lt;- strptime(crime.seattle$crime.time, format = "%m/%d/%Y %H:%M")
+crime.seattle$date &lt;- strptime(crime.seattle$crime.time, 
+                               format = "%m/%d/%Y %H:%M")
 crime.seattle$time &lt;- substr(crime.seattle$date, 12,13)
-crime.seattle$time[crime.seattle$time %in% c("00", "01", "02","03", "22", "23", "24")] &lt;- "night"
-crime.seattle$time[crime.seattle$time %in% c("04", "05", "06","07", "08", "09")] &lt;- "morning"
-crime.seattle$time[crime.seattle$time %in% c("10", "11", "12","13", "14", "15")] &lt;- "midday"
-crime.seattle$time[crime.seattle$time %in% c("16", "17", "18","19", "20", "21")] &lt;- "evening"
+crime.seattle$time[crime.seattle$time %in% c("00", "01", "02","03", "22", 
+                                             "23", "24")] &lt;- "night"
+crime.seattle$time[crime.seattle$time %in% c("04", "05", "06","07", 
+                                             "08", "09")] &lt;- "morning"
+crime.seattle$time[crime.seattle$time %in% c("10", "11", "12","13", 
+                                             "14", "15")] &lt;- "midday"
+crime.seattle$time[crime.seattle$time %in% c("16", "17", "18","19", 
+                                             "20", "21")] &lt;- "evening"
 time.table &lt;- table(crime.seattle$time,crime.seattle$crime.desc)
-time &lt;- factor(rownames(time.table), levels = c("morning", "midday", "evening", "night"))
+time &lt;- factor(rownames(time.table), levels = c("morning", "midday", 
+                                                "evening", "night"))
 sorted.time.table &lt;- time.table[order(time), ]
 table1 &lt;- sorted.time.table[ , c("CAR PROWL", "BURGLARY", "OTHER PROPERTY")]
 category &lt;- c("morning", "midday", "evening", "night")
-matplot(table1, type = "l", main = "Thefts by Time of Day", xlab = "Section of Day",ylab = "Frequency", xaxt = "n")
+matplot(table1, type = "l", main = "Thefts by Time of Day", 
+                xlab = "Section of Day",ylab = "Frequency", xaxt = "n")
 v1 &lt;- c(1, 2, 3, 4)
 axis(side = 1, at = v1, labels = category)
 </code></pre>
@@ -103,14 +110,20 @@ to plot and visualize different crime description code on a Seattle map.</p>
 <pre><code>crime.sample &lt;- crime.seattle[2:1000, 15:16]
 latitude &lt;- crime.sample$latitude
 longitude &lt;- crime.sample$longitude
-basemap &lt;- get_map(location='Seattle, USA', zoom = 11, maptype='roadmap', color='bw', source='google')
-map1 &lt;- ggmap(basemap, extent='panel', base_layer=ggplot(crime.sample, aes(x=longitude, y=latitude)))
+basemap &lt;- get_map(location='Seattle, USA', zoom = 11, maptype='roadmap', 
+                                            color='bw', source='google')
+map1 &lt;- ggmap(basemap, extent='panel', base_layer=ggplot(crime.sample, 
+                                                         aes(x=longitude, y=latitude)))
 map.seattle &lt;- map1 + geom_point(color = "blue", size = 4)
 map.seattle &lt;- map.seattle + labs(title="Seattle Crime Area", x="Longitude", y="Latitude")
-map.seattle &lt;- map.seattle + theme(plot.title = element_text(hjust = 0, vjust = 1, face = c("bold")))
+map.seattle &lt;- map.seattle + theme(plot.title = element_text(hjust = 0, 
+                                                             vjust = 1, 
+                                                             face = c("bold")))
 crime.desc &lt;- crime.seattle[2:1000, 6]
 map.survey &lt;- map1 + geom_point(aes(color = crime.desc), size = 4, alpha = .8)
-map.survey &lt;- map.survey + labs(title="Seattle Crime Area Map", x="Longitude", y="Latitude", color="Crime Desc Code")
+map.survey &lt;- map.survey + labs(title="Seattle Crime Area Map", 
+                                x="Longitude", y="Latitude", 
+                                color="Crime Desc Code")
 map.survey
 </code></pre>
 
@@ -134,7 +147,8 @@ crime.freq.desc &lt;- sort(crime.freq, decreasing = TRUE)
 names(crime.freq.desc)[6:35] &lt;- rep("", times = 30)
 percentlabels &lt;- round(100*crime.freq.desc/sum(crime.freq.desc),1)
 chartlabels &lt;- paste(names(crime.freq.desc)," ", percentlabels, "%", sep="")
-pie(crime.freq.desc,main = "Types of crime in Seattle", col = rainbow(10), labels=chartlabels)
+pie(crime.freq.desc,main = "Types of crime in Seattle", 
+                    col = rainbow(10), labels=chartlabels)
 </code></pre>
 
 <h3>
