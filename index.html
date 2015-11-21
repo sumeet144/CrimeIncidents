@@ -69,7 +69,7 @@ The csv file contains 570,645 records having below variables:</p>
 
 <p>The following charts are drawn to explore possible relationships or patterns in the data.</p>
 
-<p>(a) Line Plot – The below visualization presents the frequency for crimes by time of the day. There
+<p>(a) <em>Line Plot</em> – The below visualization presents the frequency for crimes by time of the day. There
 are approximately 61 categories of crime incidents in the dataset. I took a subset and prepared this
 visualization for top three crime categories – Car Prowl, Other Property, and Burglary. Using the
 below R code, I divided the day into 6 hour intervals each for night, morning, midday, and
@@ -82,27 +82,36 @@ crimes committed over different intervals of the day from 1965 to 2015.</p>
 crime.seattle$date &lt;- strptime(crime.seattle$crime.time, 
                                format = "%m/%d/%Y %H:%M")
 crime.seattle$time &lt;- substr(crime.seattle$date, 12,13)
-crime.seattle$time[crime.seattle$time %in% c("00", "01", "02","03", "22", 
-                                             "23", "24")] &lt;- "night"
-crime.seattle$time[crime.seattle$time %in% c("04", "05", "06","07", 
-                                             "08", "09")] &lt;- "morning"
-crime.seattle$time[crime.seattle$time %in% c("10", "11", "12","13", 
-                                             "14", "15")] &lt;- "midday"
-crime.seattle$time[crime.seattle$time %in% c("16", "17", "18","19", 
-                                             "20", "21")] &lt;- "evening"
+crime.seattle$time[crime.seattle$time %in% c("00", "01", "02",
+                                             "03", "22", "23", 
+                                             "24")] &lt;- "night"
+crime.seattle$time[crime.seattle$time %in% c("04", "05", "06",
+                                             "07", "08", "09")] 
+                                             &lt;- "morning"
+crime.seattle$time[crime.seattle$time %in% c("10", "11", "12",
+                                             "13", "14", "15")] 
+                                             &lt;- "midday"
+crime.seattle$time[crime.seattle$time %in% c("16", "17", "18",
+                                             "19", "20", "21")] 
+                                             &lt;- "evening"
 time.table &lt;- table(crime.seattle$time,crime.seattle$crime.desc)
-time &lt;- factor(rownames(time.table), levels = c("morning", "midday", 
-                                                "evening", "night"))
+time &lt;- factor(rownames(time.table), 
+               levels = c("morning", "midday", 
+                          "evening", "night"))
 sorted.time.table &lt;- time.table[order(time), ]
-table1 &lt;- sorted.time.table[ , c("CAR PROWL", "BURGLARY", "OTHER PROPERTY")]
+table1 &lt;- sorted.time.table[ , c("CAR PROWL", "BURGLARY", 
+                                 "OTHER PROPERTY")]
 category &lt;- c("morning", "midday", "evening", "night")
 matplot(table1, type = "l", main = "Thefts by Time of Day", 
-                xlab = "Section of Day",ylab = "Frequency", xaxt = "n")
+                xlab = "Section of Day",ylab = "Frequency", 
+                xaxt = "n")
 v1 &lt;- c(1, 2, 3, 4)
 axis(side = 1, at = v1, labels = category)
 </code></pre>
 
-<p>(b) Map Plot – This type of visualization will enable patterns to be drawn on a map. The map
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/master/LinePlot.png" alt=""></p>
+
+<p>(b) <em>Map Plot</em> – This type of visualization will enable patterns to be drawn on a map. The map
 visualization enables representation of different crime categories and their concentration on a city
 map. By taking location values in the dataset and using google map libraries, R code can be used
 to plot and visualize different crime description code on a Seattle map.</p>
@@ -110,31 +119,39 @@ to plot and visualize different crime description code on a Seattle map.</p>
 <pre><code>crime.sample &lt;- crime.seattle[2:1000, 15:16]
 latitude &lt;- crime.sample$latitude
 longitude &lt;- crime.sample$longitude
-basemap &lt;- get_map(location='Seattle, USA', zoom = 11, maptype='roadmap', 
-                                            color='bw', source='google')
-map1 &lt;- ggmap(basemap, extent='panel', base_layer=ggplot(crime.sample, 
-                                                         aes(x=longitude, y=latitude)))
+basemap &lt;- get_map(location='Seattle, USA', zoom = 11, 
+                   maptype='roadmap', color='bw', source='google')
+map1 &lt;- ggmap(basemap, extent='panel', 
+              base_layer=ggplot(crime.sample, aes(x=longitude, 
+                                                  y=latitude)))
 map.seattle &lt;- map1 + geom_point(color = "blue", size = 4)
-map.seattle &lt;- map.seattle + labs(title="Seattle Crime Area", x="Longitude", y="Latitude")
-map.seattle &lt;- map.seattle + theme(plot.title = element_text(hjust = 0, 
-                                                             vjust = 1, 
-                                                             face = c("bold")))
+map.seattle &lt;- map.seattle + labs(title="Seattle Crime Area", 
+                                  x="Longitude", y="Latitude")
+map.seattle &lt;- map.seattle + 
+               theme(plot.title = element_text(hjust = 0, 
+                                               vjust = 1, 
+                                               face = c("bold")))
 crime.desc &lt;- crime.seattle[2:1000, 6]
-map.survey &lt;- map1 + geom_point(aes(color = crime.desc), size = 4, alpha = .8)
+map.survey &lt;- map1 + geom_point(aes(color = crime.desc), 
+                                size = 4, alpha = .8)
 map.survey &lt;- map.survey + labs(title="Seattle Crime Area Map", 
                                 x="Longitude", y="Latitude", 
                                 color="Crime Desc Code")
 map.survey
 </code></pre>
 
-<p>(c) Bar Chart - The bar chart is generated to explore the frequency of the crime incidents. This shows what are the top crimes reported or occurred in the Seattle area.</p>
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/master/mapsea.png" alt=""></p>
+
+<p>(c) <em>Bar Chart</em> - The bar chart is generated to explore the frequency of the crime incidents. This shows what are the top crimes reported or occurred in the Seattle area.</p>
 
 <pre><code>barplot(sort(table(crime.seattle$crime.desc), decreasing=TRUE), 
         main="Seattle Crime Incidents Numbers",
         xlab="Crime", ylab="Number of times crime committed")
 </code></pre>
 
-<p>(d) Pie Chart – The following pie chart is generated using the below R code. This visualization
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/master/bar.png" alt=""></p>
+
+<p>(d) <em>Pie Chart</em> – The following pie chart is generated using the below R code. This visualization
 illustrates the distribution of different types of crimes in Seattle area. The pie chart shows the
 proportion of different categories in the given dataset. Even though this visualization presents
 useful information and shows the proportion for highest committed crime categories such as ‘Car
@@ -146,10 +163,13 @@ crime.freq &lt;- table(crime.seattle$crime.desc)
 crime.freq.desc &lt;- sort(crime.freq, decreasing = TRUE)
 names(crime.freq.desc)[6:35] &lt;- rep("", times = 30)
 percentlabels &lt;- round(100*crime.freq.desc/sum(crime.freq.desc),1)
-chartlabels &lt;- paste(names(crime.freq.desc)," ", percentlabels, "%", sep="")
+chartlabels &lt;- paste(names(crime.freq.desc)," ", 
+                           percentlabels, "%", sep="")
 pie(crime.freq.desc,main = "Types of crime in Seattle", 
                     col = rainbow(10), labels=chartlabels)
 </code></pre>
+
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/master/pie.png" alt=""></p>
 
 <h3>
 <a id="interesting-point" class="anchor" href="#interesting-point" aria-hidden="true"><span class="octicon octicon-link"></span></a>Interesting Point</h3>
@@ -169,6 +189,8 @@ numbers at different times of the day. The graph shows the patterns of the top t
 day in Seattle and presents it in an easy to read and simple way that may interest the audiences of
 this visualization.</li>
 </ul>
+
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/master/FinalPlot.PNG" alt=""></p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/sumeet144">sumeet144</a></p>
