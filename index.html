@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Seattle Crime Analysis : Exploratory data analysis using R programming">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Seattle Crime Analysis</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/sumeet144/CrimeIncidents">View on GitHub</a>
+
+          <h1 id="project_title">Seattle Crime Analysis</h1>
+          <h2 id="project_tagline">Exploratory data analysis using R programming</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/sumeet144/CrimeIncidents/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/sumeet144/CrimeIncidents/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a id="about-project" class="anchor" href="#about-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>About Project</h3>
+
+<p>The dataset for the exploratory data analysis is sourced from [data.seattle.gov] and downloaded to a csv
+file to perform analysis using R.
+The dataset contains the details about crime incidents in Seattle recorded by Seattle police officers when
+responding to incidents around the city. The information recorded by police officers is entered into
+Records Management System (RMS) of Seattle police department and is, then, made available on
+data.seattle.gov website for public. The dataset contains all the incidents reported from 1965 to the month
+of April in 2015.
+The csv file contains 570,645 records having below variables:</p>
+
+<ul>
+<li>RMS CDW ID – Record ID in Records Management System (RMS)</li>
+<li>General Offense Number – Unique number assigned to the offense</li>
+<li>Offense Code – Code for the offense recorded</li>
+<li>Offense Code Extension – Extended offense code</li>
+<li>Offense Type – Type of the offense reported</li>
+<li>Summary Offense Code – Code for the summary of the offense</li>
+<li>Summarized Offense Description – Description of the offense</li>
+<li>Date Reported – Reported date of the incident</li>
+<li>Occurred Date – Date of the crime, when committed</li>
+<li>Occurred Date Range End – End date of crimes which lasted more than one day</li>
+<li>Hundred Block Location – Location where crime is committed/happened</li>
+<li>District/Sector – Details about the crime location district</li>
+<li>Zone/Beat – Police jurisdiction where the crime is committed</li>
+<li>Longitude/Latitude/Location – Map location of the crime scene</li>
+<li>Month – Month of the reported crime</li>
+<li>Year – Year of the reported crime</li>
+</ul>
+
+<h3>
+<a id="data-cleaning" class="anchor" href="#data-cleaning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Cleaning</h3>
+
+<p>I cleaned the dataset for further analysis by typecasting the variables to appropriate data type such as changed latitude and longitude variables to numeric from character and changed date variable to date format. Dropped repeated variables to tidy the dataset for efficient and quick analysis. </p>
+
+<h3>
+<a id="exploratory-data-analysis" class="anchor" href="#exploratory-data-analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Exploratory Data Analysis</h3>
+
+<p>The following charts are drawn to explore possible relationships or patterns in the data.</p>
+
+<p>(a) <em>Line Plot</em> – The below visualization presents the frequency for crimes by time of the day. There
+are approximately 61 categories of crime incidents in the dataset. I took a subset and prepared this
+visualization for top three crime categories – Car Prowl, Other Property, and Burglary. Using the
+below R code, I divided the day into 6 hour intervals each for night, morning, midday, and
+evening. I, then, counted the number of crimes occurred in those time intervals for Car Prowl,
+Other Property, and Burglary from 1965 to the month of April 2015 in the dataset. The ‘table2’
+below shows the number. This type of visualization will enable patterns, showing the top 3
+crimes committed over different intervals of the day from 1965 to 2015.</p>
+
+<pre><code>crime.seattle &lt;- read.csv(file="crime.csv", head=TRUE, sep=",")
+crime.seattle$date &lt;- strptime(crime.seattle$crime.time, 
+                               format = "%m/%d/%Y %H:%M")
+crime.seattle$time &lt;- substr(crime.seattle$date, 12,13)
+crime.seattle$time[crime.seattle$time %in% c("00", "01", "02",
+                                             "03", "22", "23", 
+                                             "24")] &lt;- "night"
+crime.seattle$time[crime.seattle$time %in% c("04", "05", "06",
+                                             "07", "08", "09")] 
+                                             &lt;- "morning"
+crime.seattle$time[crime.seattle$time %in% c("10", "11", "12",
+                                             "13", "14", "15")] 
+                                             &lt;- "midday"
+crime.seattle$time[crime.seattle$time %in% c("16", "17", "18",
+                                             "19", "20", "21")] 
+                                             &lt;- "evening"
+time.table &lt;- table(crime.seattle$time,crime.seattle$crime.desc)
+time &lt;- factor(rownames(time.table), 
+               levels = c("morning", "midday", 
+                          "evening", "night"))
+sorted.time.table &lt;- time.table[order(time), ]
+table1 &lt;- sorted.time.table[ , c("CAR PROWL", "BURGLARY", 
+                                 "OTHER PROPERTY")]
+category &lt;- c("morning", "midday", "evening", "night")
+matplot(table1, type = "l", main = "Thefts by Time of Day", 
+                xlab = "Section of Day",ylab = "Frequency", 
+                xaxt = "n")
+v1 &lt;- c(1, 2, 3, 4)
+axis(side = 1, at = v1, labels = category)
+</code></pre>
+
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/LinePlot.png" alt="Top 3 crimes by day"></p>
+
+<p>(b) <em>Map Plot</em> – This type of visualization will enable patterns to be drawn on a map. The map
+visualization enables representation of different crime categories and their concentration on a city
+map. By taking location values in the dataset and using google map libraries, R code can be used
+to plot and visualize different crime description code on a Seattle map.</p>
+
+<pre><code>crime.sample &lt;- crime.seattle[2:1000, 15:16]
+latitude &lt;- crime.sample$latitude
+longitude &lt;- crime.sample$longitude
+basemap &lt;- get_map(location='Seattle, USA', zoom = 11, 
+                   maptype='roadmap', color='bw', source='google')
+map1 &lt;- ggmap(basemap, extent='panel', 
+              base_layer=ggplot(crime.sample, aes(x=longitude, 
+                                                  y=latitude)))
+map.seattle &lt;- map1 + geom_point(color = "blue", size = 4)
+map.seattle &lt;- map.seattle + labs(title="Seattle Crime Area", 
+                                  x="Longitude", y="Latitude")
+map.seattle &lt;- map.seattle + 
+               theme(plot.title = element_text(hjust = 0, 
+                                               vjust = 1, 
+                                               face = c("bold")))
+crime.desc &lt;- crime.seattle[2:1000, 6]
+map.survey &lt;- map1 + geom_point(aes(color = crime.desc), 
+                                size = 4, alpha = .8)
+map.survey &lt;- map.survey + labs(title="Seattle Crime Area Map", 
+                                x="Longitude", y="Latitude", 
+                                color="Crime Desc Code")
+map.survey
+</code></pre>
+
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/mapsea.png" alt=""></p>
+
+<p>(c) <em>Bar Chart</em> - The bar chart is generated to explore the frequency of the crime incidents. This shows what are the top crimes reported or occurred in the Seattle area.</p>
+
+<pre><code>barplot(sort(table(crime.seattle$crime.desc), decreasing=TRUE), 
+        main="Seattle Crime Incidents Numbers",
+        xlab="Crime", ylab="Number of times crime committed")
+</code></pre>
+
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/bar.png" alt=""></p>
+
+<p>(d) <em>Pie Chart</em> – The following pie chart is generated using the below R code. This visualization
+illustrates the distribution of different types of crimes in Seattle area. The pie chart shows the
+proportion of different categories in the given dataset. Even though this visualization presents
+useful information and shows the proportion for highest committed crime categories such as ‘Car
+Prowl’, ‘Other Property’, and ‘Burglary’ in the dataset but other categories which have less
+proportion are not clearly visible for comparison or recording the observations.</p>
+
+<pre><code>crime.seattle &lt;- read.csv(file="crime.csv", head=TRUE, sep=",")
+crime.freq &lt;- table(crime.seattle$crime.desc)
+crime.freq.desc &lt;- sort(crime.freq, decreasing = TRUE)
+names(crime.freq.desc)[6:35] &lt;- rep("", times = 30)
+percentlabels &lt;- round(100*crime.freq.desc/sum(crime.freq.desc),1)
+chartlabels &lt;- paste(names(crime.freq.desc)," ", 
+                           percentlabels, "%", sep="")
+pie(crime.freq.desc,main = "Types of crime in Seattle", 
+                    col = rainbow(10), labels=chartlabels)
+</code></pre>
+
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/pie.png" alt=""></p>
+
+<h3>
+<a id="interesting-point" class="anchor" href="#interesting-point" aria-hidden="true"><span class="octicon octicon-link"></span></a>Interesting Point</h3>
+
+<p>The final visualization selected to represent this dataset is the line plot. This is for the following reasons:</p>
+
+<ul>
+<li>The pie chart presents the distribution of crime incidents in the whole dataset but due to large
+number of crime categories and their lesser proportion in the dataset, it is not very helpful to
+compare different sections of the crime categories in the visualization.</li>
+<li>The map chart is really representative of the concentration of different crimes on Seattle map.
+However, the graph may be difficult to read with all the 21 crime description code on the map. It
+could be useful to draw a pattern to find a highly concentrated area of crime on the map,
+irrespective of the crime description code.</li>
+<li>The line plot provides the visualization that presents the top three committed crimes and their
+numbers at different times of the day. The graph shows the patterns of the top three crimes in a
+day in Seattle and presents it in an easy to read and simple way that may interest the audiences of
+this visualization.</li>
+</ul>
+
+<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/FinalPlot.PNG" alt=""></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Seattle Crime Analysis maintained by <a href="https://github.com/sumeet144">sumeet144</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
