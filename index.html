@@ -1,36 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Seattle Crime Analysis : Exploratory data analysis using R programming">
+    <title>Seattle Crime Analysis by sumeet144</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Seattle Crime Analysis</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>Seattle Crime Analysis</h1>
+        <p>Exploratory data analysis using R programming</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/sumeet144/CrimeIncidents">View on GitHub</a>
+        <p class="view"><a href="https://github.com/sumeet144/CrimeIncidents">View the Project on GitHub <small>sumeet144/CrimeIncidents</small></a></p>
 
-          <h1 id="project_title">Seattle Crime Analysis</h1>
-          <h2 id="project_tagline">Exploratory data analysis using R programming</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/sumeet144/CrimeIncidents/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/sumeet144/CrimeIncidents/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+        <ul>
+          <li><a href="https://github.com/sumeet144/CrimeIncidents/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/sumeet144/CrimeIncidents/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/sumeet144/CrimeIncidents">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h3>
 <a id="about-project" class="anchor" href="#about-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>About Project</h3>
 
@@ -112,7 +109,7 @@ v1 &lt;- c(1, 2, 3, 4)
 axis(side = 1, at = v1, labels = category)
 </code></pre>
 
-<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/LinePlot.png" alt="Top 3 crimes by day"></p>
+<p><img src="images\LinePlot.png" alt="Top 3 crimes by day"></p>
 
 <p>(b) <em>Map Plot</em> – This type of visualization will enable patterns to be drawn on a map. The map
 visualization enables representation of different crime categories and their concentration on a city
@@ -143,7 +140,7 @@ map.survey &lt;- map.survey + labs(title="Seattle Crime Area Map",
 map.survey
 </code></pre>
 
-<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/mapsea.png" alt=""></p>
+<p><img src="images\mapsea.png" alt=""></p>
 
 <p>(c) <em>Bar Chart</em> - The bar chart is generated to explore the frequency of the crime incidents. This shows what are the top crimes reported or occurred in the Seattle area.</p>
 
@@ -152,7 +149,7 @@ map.survey
         xlab="Crime", ylab="Number of times crime committed")
 </code></pre>
 
-<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/bar.png" alt=""></p>
+<p><img src="images\bar.png" alt=""></p>
 
 <p>(d) <em>Pie Chart</em> – The following pie chart is generated using the below R code. This visualization
 illustrates the distribution of different types of crimes in Seattle area. The pie chart shows the
@@ -172,7 +169,7 @@ pie(crime.freq.desc,main = "Types of crime in Seattle",
                     col = rainbow(10), labels=chartlabels)
 </code></pre>
 
-<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/pie.png" alt=""></p>
+<p><img src="images\pie.png" alt=""></p>
 
 <h3>
 <a id="interesting-point" class="anchor" href="#interesting-point" aria-hidden="true"><span class="octicon octicon-link"></span></a>Interesting Point</h3>
@@ -193,19 +190,14 @@ day in Seattle and presents it in an easy to read and simple way that may intere
 this visualization.</li>
 </ul>
 
-<p><img src="https://github.com/sumeet144/CrimeIncidents/blob/gh-pages/FinalPlot.PNG" alt=""></p>
+<p><img src="images\FinalPlot.PNG" alt=""></p>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Seattle Crime Analysis maintained by <a href="https://github.com/sumeet144">sumeet144</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/sumeet144">sumeet144</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
     
-
   </body>
 </html>
